@@ -18,12 +18,7 @@ def algo(path):
     if path != '':
         if '.html' not in path:
             path += '.html'
-
-        files = [f for f in listdir('./templates') if isfile(join('./templates', f))]
-        if path in files:
-            return render_template(path)
-
-        return render_template('404.html'), 404
+        return render_template(path)
 
     return render_template('algo.html')
 
