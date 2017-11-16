@@ -56,3 +56,10 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# MacOS shit
+*.DS_Store
+
+# SSH Password))
+up.sh
+sup.sh

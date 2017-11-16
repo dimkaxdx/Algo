@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+        <script type="text/javascript">
+          function al(a) {
+              alert(a);
+          }
+        </script>
+        <title>School Olymp</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    </head>
+    <body>
+      <header>
+        <div class="navbar navbar-inverse">
+          <div class="navbar-inner">
+            <a class="brand" href="/">Algo</a>
+            <u1 class="nav">
+              <li><a href="/algo">Алгоритмики</a></li>
+            </u1>
+          </div>
+        </div>
+      </header><div class="container">
+        {% block content %}
+        {% endblock %}  </div>
+      </div>
+
+    </body>
+  </html>
