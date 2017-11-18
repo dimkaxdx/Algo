@@ -63,3 +63,6 @@ target/
 # SSH Password))
 up.sh
 sup.sh
+
+#Compilation exe
+*.ex
