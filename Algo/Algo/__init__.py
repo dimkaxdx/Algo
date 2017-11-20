@@ -4,24 +4,28 @@ from os.path import isfile, isdir, join, expanduser, basename
 
 app = Flask(__name__)
 
-def make_tree(path):
-    tree = dict(name=[path[7:], basename(path)], children=[])
-    try: lst = listdir(path)
+def make_tree(apath, spath):
+    tree = dict(name=[spath, basename(spath)], children=[])
+    try: lst = listdir(apath)
     except OSError:
         pass
     else:
         for name in lst:
-            fn = join(path, name)
-            if isdir(fn):
-                tree['children'].append(make_tree(fn))
+            afn = join(apath, name)
+            sfn = join(spath, name)
+            if isdir(afn):
+                tree['children'].append(make_tree(afn, sfn))
             else:
-                tree['children'].append(dict(name=[fn[7:], name]))
+                tree['children'].append(dict(name=[sfn, name]))
     return tree
 
 @app.route('/tree')
 def dirtree():
-    path = expanduser(u'./Algo/static/Algo_source')
-    return render_template('dirtree.html', tree=make_tree(path))
+    abspath = '/var/www/Algo/Algo/static/Algo_source'
+    if __name__ == '__main__':
+        abspath = './static/Algo_source'
+    shortpath = '/static/Algo_source'
+    return render_template('dirtree.html', tree=make_tree(abspath, shortpath))
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -40,3 +44,7 @@ def algo(path):
         return render_template(path)
 
     return render_template('algo.html')
+
+if __name__ == '__main__':
+    app.debug = True
+    app.run(host='0.0.0.0', port=5000)
