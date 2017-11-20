@@ -5,7 +5,7 @@ from os.path import isfile, isdir, join, expanduser, basename
 app = Flask(__name__)
 
 def make_tree(path):
-    tree = dict(name=[path, basename(path)], children=[])
+    tree = dict(name=[path[7:], basename(path)], children=[])
     try: lst = listdir(path)
     except OSError:
         pass
@@ -15,26 +15,12 @@ def make_tree(path):
             if isdir(fn):
                 tree['children'].append(make_tree(fn))
             else:
-                tree['children'].append(dict(name=[fn, name]))
+                tree['children'].append(dict(name=[fn[7:], name]))
     return tree
-
-# def make_tree(path):
-#     tree = dict(name=os.path.basename(path), children=[])
-#     try: lst = os.listdir(path)
-#     except OSError:
-#         pass #ignore errors
-#     else:
-#         for name in lst:
-#             fn = os.path.join(path, name)
-#             if os.path.isdir(fn):
-#                 tree['children'].append(make_tree(fn))
-#             else:
-#                 tree['children'].append(dict(name=name))
-#     return tree
 
 @app.route('/tree')
 def dirtree():
-    path = expanduser(u'./static/Algo_source')
+    path = expanduser(u'./Algo/static/Algo_source')
     return render_template('dirtree.html', tree=make_tree(path))
 
 @app.errorhandler(404)
@@ -54,7 +40,3 @@ def algo(path):
         return render_template(path)
 
     return render_template('algo.html')
-
-if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0', port=5000)
