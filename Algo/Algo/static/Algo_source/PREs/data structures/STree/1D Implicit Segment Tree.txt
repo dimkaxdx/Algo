@@ -1,0 +1,37 @@
+const int N = 1e5 + 1, DO = N << 4;
+
+int leaf, t[DO], lptr[DO],
+    rptr[DO], a[N];
+void push(int v){
+    if (!lptr[v]) lptr[v] = ++ leaf,
+        rptr[v] = ++ leaf;
+}
+int update(int v, int tl, int tr, int idx, int val){
+    if (tl == tr) return t[v] = val;
+    push(v);
+    int lft = lptr[v], rht = rptr[v],
+        tm = (tl + tr) >> 1;
+    if (idx > tm) return t[v] = t[lft] + update(rht, tm + 1, tr, idx, val);
+    return t[v] = t[rht] + update(lft, tl, tm, idx, val);
+}
+int get(int v, int tl, int tr, int l, int r){
+    if (l > r) return 0;
+    if (tl >= l && tr <= r) return t[v];
+    push(v);
+    int lft = lptr[v], rht = rptr[v],
+        tm = (tl + tr) >> 1, res = 0;
+    if (l <= tm) res = get(lft, tl, tm, l, r);
+    if (r > tm) res += get(rht, tm + 1, tr, l, r);
+    return res;
+}
+int get(int v, int tl, int tr, int k){
+    while (tl < tr){
+        push(v);
+        int lft = lptr[v], rht = rptr[v], tm = (tl + tr) >> 1;
+        if (k > tm - tl + 1 - t[lft])
+            v = rht, k -= tm - tl + 1 - t[lft],
+            tl = tm + 1;
+        else v = lft, tr = tm;
+    }
+    return tl;
+}

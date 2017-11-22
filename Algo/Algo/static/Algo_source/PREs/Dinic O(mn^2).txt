@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+int input(){
+    int res = 0; char c = ' ';
+    while (c < '0') c = getchar();
+    while (c >= '0') res = res * 10 + (c - '0'), c = getchar();
+    return res;
+}
+typedef long long ll;
+const int N = 501;
+const ll INF = 1e18;
+
+int n, s, t, c[N][N], f[N][N], d[N], ptr[N], q[N];
+bool bfs(){
+    int qh = 0, qt = 0;
+    q[qt ++] = s;
+    memset(d, -1, n * sizeof(d[0]));
+    d[s] = 0;
+    while (qh < qt){
+        int v = q[qh]; ++ qh;
+        for (int to = 0; to < n; ++ to)
+            if (d[to] == -1 && f[v][to] < c[v][to]){
+                q[qt] = to, ++ qt;
+                d[to] = d[v] + 1;
+            }
+    }
+    return d[t] != -1;
+}
+int dfs(int v, ll flow){
+    if (!flow || v == t) return flow;
+    for (int& to = ptr[v]; to < n; ++ to){
+        if (d[to] != d[v] + 1) continue;
+        ll pushed = dfs(to, min(flow, ll(c[v][to] - f[v][to])));
+        if (pushed){
+            f[v][to] += pushed,
+            f[to][v] -= pushed;
+            return pushed;
+        }
+    }
+    return 0;
+}
+ll dinic(){
+    ll flow = 0;
+    for (;bfs();){
+        memset(ptr, 0, n * sizeof(ptr[0]));
+        while (ll pushed = dfs(s, INF))
+            flow += pushed;
+    }
+    return flow;
+}
+int main(){
+    n = input();
+    for (int m = input(); m; -- m){
+        int u = input() - 1, v = input() - 1, cap = input();
+        c[u][v] = cap;
+    }
+    s = 0, t = n - 1;
+    cout << dinic();
+}

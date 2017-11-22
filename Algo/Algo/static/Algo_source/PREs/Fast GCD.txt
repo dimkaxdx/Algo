@@ -1,0 +1,16 @@
+int gcd(int u, int v){
+    if (!u) return v;
+    if (!v) return u;
+    int shift;
+
+    for (shift = 0; ~(u | v) & 1; ++ shift)
+        v >>= 1, u >>= 1;
+    while (~u & 1) u >>= 1;
+    do{
+        while (~v & 1) v >>= 1;
+        if (u > v)
+            swap(u, v);
+        v -= u;
+    } while (v);
+    return u << shift;
+}

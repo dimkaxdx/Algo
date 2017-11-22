@@ -1,0 +1,21 @@
+const int N = 1e5 + 1;
+
+int a[N], t[N << 3];
+int build(int v, int tl, int tr){
+    if (tl == tr) return t[v] = a[tl];
+    int x = v << 1, tm = (tl + tr) >> 1;
+    return t[v] = min(build(x, tl, tm), build(x + 1, tm + 1, tr));
+}
+int update(int v, int tl, int tr, int idx, int val){
+    if (tl == tr) return t[v] = val;
+    int x = v << 1, tm = (tl + tr) >> 1;
+    if (idx > tm) return t[v] = min(t[x], update(x + 1, tm + 1, tr, idx, val));
+    return t[v] = min(t[x + 1], update(x, tl, tm, idx, val));
+}
+int get(int v, int tl, int tr, int l, int r){
+    if (tl >= l && tr <= r) return t[v];
+    int x = v << 1, tm = (tl + tr) >> 1, res = 1e9;
+    if (l <= tm) res = get(x, tl, tm, l, r);
+    if (r > tm) res = min(res, get(x + 1, tm + 1, tr, l, r));
+    return res;
+}

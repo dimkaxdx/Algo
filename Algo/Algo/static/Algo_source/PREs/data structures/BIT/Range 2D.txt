@@ -1,0 +1,26 @@
+const int N = 1e3 + 1;
+
+int f[4][N][N];
+void modify(int x, int y, int w){
+    int d[] = {w, w * (1 - y), w * (1 - x), w * (1 - x) * (1 - y)};
+    for (int i = x; i < N; i |= (i + 1))
+        for (int j = y; j < N; j |= (j + 1))
+            for (int k = 0; k < 4; ++ k)
+                f[k][i][j] += d[k];
+}
+void add(int l, int r, int x, int y, int w){
+    modify(l - 1, x - 1, w), modify(r, y, w),
+    modify(r, x - 1, -w), modify(l - 1, y, -w);
+}
+int get(int x, int y){
+    int d[] = {0, 0, 0, 0};
+    for (int i = x; i >= 0; i = (i & (i + 1)) - 1)
+        for (int j = y; j >= 0; j = (j & (j + 1)) - 1)
+            for (int k = 0; k < 4; ++ k)
+                d[k] += f[k][i][j];
+    return d[0] * x * y + d[1] * x + d[2] * y + d[3];
+}
+int get(int l, int r, int x, int y){
+    return get(r, y) - get(l - 1, y)
+        - get(r, x - 1) + get(l - 1, x - 1);
+}

@@ -1,0 +1,13 @@
+const int N = 1e5 + 1;
+
+int f[N];
+void modify(int idx, int val){
+    for (; idx < N; idx |= (idx + 1))
+        f[idx] += val;
+}
+int get(int idx){
+    int res = 0;
+    for (; idx >= 0; idx = (idx & (idx + 1)) - 1)
+        res += f[idx];
+    return res;
+}

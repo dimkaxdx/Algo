@@ -1,0 +1,46 @@
+const int N = 1e5 + 1, MAX = 1e6, DO = N << 4;
+
+int sf = 1, st[DO], sl[DO], sr[DO];
+int scr(int& v){
+    if (!v) v = ++ sf;
+    return v;
+}
+int smod(int v, int tl, int tr, int i, int val){
+    if (tl == tr) return st[v] += val;
+    int &lft = sl[v], &rht = sr[v],
+        tm = (tl + tr) >> 1;
+    if (i > tm) return st[v] = st[scr(lft)] + smod(scr(rht), tm + 1, tr, i, val);
+    return st[v] = st[scr(rht)] + smod(scr(lft), tl, tm, i, val);
+}
+int sget(int v, int tl, int tr, int l, int r){
+    if (tl >= l && tr <= r) return st[v];
+    int &lft = sl[v], &rht = sr[v],
+        tm = (tl + tr) >> 1, res = 0;
+    if (l <= tm) res = sget(scr(lft), tl, tm, l, r);
+    if (r > tm) res += sget(scr(rht), tm + 1, tr, l, r);
+    return res;
+}
+
+int ff = 1, ft[DO], fl[DO], fr[DO];
+int fcr(int& v){
+    if (!v) scr(ft[v = ++ ff]);
+    return v;
+}
+void fmod(int v, int tl, int tr, int i, int j, int val){
+    while (true){
+        smod(scr(ft[v]), 0, MAX, j, val);
+        if (tl == tr) break;
+        int &lft = fl[v], &rht = fr[v],
+            tm = (tl + tr) >> 1;
+        if (i > tm) v = fcr(rht), tl = tm + 1;
+        else v = fcr(lft), tr = tm;
+    }
+}
+int fget(int v, int tl, int tr, int l, int r, int x, int y){
+    if (tl >= l && tr <= r) return sget(scr(ft[v]), 0, MAX, x, y);
+    int &lft = fl[v], &rht = fr[v],
+        tm = (tl + tr) >> 1, res = 0;
+    if (l <= tm) res = fget(fcr(lft), tl, tm, l, r, x, y);
+    if (r > tm) res += fget(fcr(rht), tm + 1, tr, l, r, x, y);
+    return res;
+}

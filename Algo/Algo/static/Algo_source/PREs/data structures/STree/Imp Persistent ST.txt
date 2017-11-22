@@ -1,0 +1,45 @@
+const int N = 1e5 + 1, DO = N << 4;
+
+int leaf, lft[DO], rht[DO], t[DO],
+    root[N], sz = 1;
+void push(int v){
+    if (!lft[v]) lft[v] = ++ leaf;
+    if (!rht[v]) rht[v] = ++ leaf;
+}
+int mod(int tl, int tr, int idx,
+        int old, int rec, int val){
+    if (tl == tr) return t[rec] = val;
+    int tm = (tl + tr) >> 1,
+        &lo = lft[old], &ro = rht[old],
+        &lr = lft[rec], &rr = rht[rec];
+    push(old), push(rec);
+    if (idx > tm)
+        return t[rec] = t[lr = lo]
+                + mod(tm + 1, tr, idx,
+                ro, rr = ++ leaf, val);
+    else
+        return t[rec] = t[rr = ro]
+                + mod(tl, tm, idx,
+                lo, lr = ++ leaf, val);
+}
+int get(int v, int tl, int tr, int l, int r){
+    if (tl >= l && tr <= r) return t[v];
+    int tm = (tl + tr) >> 1, res = 0;
+    if (r > tm) res = get(rht[v], tm + 1, tr, l, r);
+    if (l <= tm) res += get(lft[v], tl, tm, l, r);
+    return res;
+}
+
+int main(){
+    int n = input(), q = input();
+    for (int i = 0; i < q; ++ i){
+        char c; cin >> c;
+        if (c == '?'){
+            int v = input(), l = input() - 1, r = input() - 1;
+            cout << get(root[v], 0, n - 1, l, r) << "\n";
+        }else{
+            int old = input(), idx = input() - 1, val = input();
+            mod(0, n - 1, idx, root[old], root[sz ++] = ++ leaf, val);
+        }
+    }
+}

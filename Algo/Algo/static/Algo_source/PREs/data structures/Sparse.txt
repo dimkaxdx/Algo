@@ -1,0 +1,19 @@
+const int N = 1e5 + 7, C = 19;
+
+int st[N * 10][C], p[C], lg[N * 10];
+void pre(){
+    p[0] = 1;
+    for (int i = 1; i < C; ++ i) lg[p[i] = p[i - 1] << 1] = i;
+    for (int i = 0, c = 0; i < N; ++ i) lg[i] = c = max(c, lg[i]);
+}
+int n, a[N];
+void calc(){
+    for (int i = 0; i < n; ++ i) st[i][0] = a[i];
+    for (int j = 1; j < C; ++ j)
+        for (int i = 0; i < n; ++ i)
+            st[i][j] = min(st[i][j - 1], st[i + p[j - 1]][j - 1]);
+}
+int get(int l, int r){
+    int len = r - l + 1;
+    return min(st[l][lg[len]], st[r - p[lg[len]] + 1][lg[len]]);
+}

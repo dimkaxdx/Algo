@@ -1,0 +1,5 @@
+ll bp(ll o, ll r, ll m){
+    if (!r) return 1;
+    if (r & 1) return (o * bp(o, r - 1, m)) % m;
+    return bp(o * o, r >> 1, m) % m;
+}

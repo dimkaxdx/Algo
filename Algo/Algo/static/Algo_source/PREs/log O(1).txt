@@ -1,0 +1,3 @@
+ll lg(ll x){
+    return __builtin_clzll(1) - __builtin_clzll(x);
+}

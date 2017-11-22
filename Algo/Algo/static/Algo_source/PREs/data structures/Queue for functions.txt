@@ -1,0 +1,25 @@
+const int N = 1e5 + 1;
+
+int n, k, lft[N], l_siz,
+    a[N], rht[N], r_siz,
+    fl[N], fr[N];
+void shift(){
+    while (r_siz) lft[l_siz] = rht[-- r_siz], ++ l_siz;
+    if (l_siz) fl[0] = lft[0];
+    for (int i = 1; i < l_siz; ++ i)
+        fl[i] = (fl[i - 1] * 1LL * lft[i]) % k;
+}
+void push(int x){
+    int prev = (r_siz ? fr[r_siz - 1] : 1);
+    rht[r_siz] = x, fr[r_siz] = (prev * 1LL * x) % k, ++ r_siz;
+}
+void pop(){
+    if (!l_siz) shift();
+    -- l_siz;
+}
+int get(){
+    int res = 1;
+    if (l_siz) res = fl[l_siz - 1] % k;
+    if (r_siz) res = (res * 1LL * fr[r_siz - 1]) % k;
+    return res;
+}
